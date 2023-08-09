@@ -1,0 +1,38 @@
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
+
+ALTER TABLE	usertype                   	RENAME	UserType                   	;
+ALTER TABLE	userrole                   	RENAME	UserRole                   	;
+ALTER TABLE	userdepartment             	RENAME	UserDepartment             	;
+ALTER TABLE	user                       	RENAME	User                       	;
+ALTER TABLE	supportcoordinatorcompany  	RENAME	SupportCoordinatorCompany  	;
+ALTER TABLE	status                     	RENAME	Status                     	;
+ALTER TABLE	service                    	RENAME	Service                    	;
+ALTER TABLE	requestedservice           	RENAME	RequestedService           	;
+ALTER TABLE	referraltype               	RENAME	ReferralType               	;
+ALTER TABLE	referral                   	RENAME	Referral                   	;
+ALTER TABLE	participantsupportcompany  	RENAME	ParticipantSupportCompany  	;
+ALTER TABLE	participantservice         	RENAME	ParticipantService         	;
+ALTER TABLE	participantphysician       	RENAME	ParticipantPhysician       	;
+ALTER TABLE	participantdisability      	RENAME	ParticipantDisability      	;
+ALTER TABLE	participantcoordinator     	RENAME	ParticipantCoordinator     	;
+ALTER TABLE	participantaltcontact      	RENAME	ParticipantAltContact      	;
+ALTER TABLE	participant                	RENAME	Participant                	;
+ALTER TABLE	menu                       	RENAME	Menu                       	;
+ALTER TABLE	maximusinfo                	RENAME	MaximusInfo                	;
+ALTER TABLE	lostparticipant            	RENAME	LostParticipant            	;
+ALTER TABLE	document                   	RENAME	Document                   	;
+ALTER TABLE	disability                 	RENAME	Disability                 	;
+ALTER TABLE	coordinatortype            	RENAME	CoordinatorType            	;
+ALTER TABLE	contacttype                	RENAME	ContactType                	;
+ALTER TABLE	contactstatustype          	RENAME	ContactStatusType          	;
+ALTER TABLE	contactstatus              	RENAME	ContactStatus              	;
+ALTER TABLE	contactmethod              	RENAME	ContactMethod              	;
+ALTER TABLE	contact                    	RENAME	Contact                    	;
+ALTER TABLE	calldetails                	RENAME	CallDetails                	;
+ALTER TABLE	auditdata                  	RENAME	AuditData                  	;
+ALTER TABLE	assessmenttype             	RENAME	AssessmentType             	;
+ALTER TABLE	appointmenttype            	RENAME	AppointmentType            	;
+ALTER TABLE	appointment                	RENAME	Appointment                	;
+ALTER TABLE	accessrights               	RENAME	AccessRights               	;
+
+SET GLOBAL FOREIGN_KEY_CHECKS=1;
