@@ -1,4 +1,3 @@
-//
 // Decompiled by Procyon v0.5.30
 //
 
@@ -67,6 +66,8 @@ public class StaticValues {
 	public static int InvalidCaptcha_Int;
 	public static String InvalidId;
 	public static Integer InvalidId_Int;
+	public static String InvalidIds;
+	public static Integer InvalidIds_Int;
 	public static String Invalidorvalid;
 	public static Integer Invalidorvalid_Int;
 	public static String JsonFormatError;
@@ -133,7 +134,8 @@ public class StaticValues {
 
 	public static String UsernameIncorrect;
 	public static Integer UsernameIncorrect_Int;
-
+	public static String UsernameIncorrect2;
+	public static Integer UsernameIncorrect2_Int;
 	public static String UserNameorPasswordIncorrect;
 	public static Integer UserNameorPasswordIncorrect_Int;
 	public static String UserroledoesntExists;
@@ -177,6 +179,32 @@ public class StaticValues {
 
 	public static String ErrorOnSendingEMail;
 	public static Integer ErrorOnSendingEMail_Int;
+
+	public static String Chevauchement;
+	public static Integer Chevauchement_Int;
+
+	public static String StartMonthLowerThanEndMonth;
+	public static Integer StartMonthLowerThanEndMonth_Int;
+	public static int BeforeDeletePleaseUserRolePleaseRemoveRoleOnUser_Int;
+	public static String BeforeDeletePleaseUserRolePleaseRemoveRoleOnUser;
+	public static Integer TypeInfosNotExits_Int;
+	public static String TypeInfosNotExits;
+
+	public static Integer ListEmailAndWhattsapEquals_Int;
+	public static String ListEmailAndWhattsapEquals;
+
+	public static Integer NotEmailOrWhattsapp_Int;
+	public static String NotEmailOrWhattsapp;
+	public static Integer WrongEmailFormat_Int;
+	public static String WrongEmailFormat;
+	public static Integer NotRightToGiveRightToAnotherUserIfYouDontHaveItYourselt_Int;
+	public static String NotRightToGiveRightToAnotherUserIfYouDontHaveItYourselt;
+	public static Integer FirstDateRequired_Int;
+	public static String FirstDateRequired;
+	public static String SubjectRequired;
+	public static Integer SubjectRequired_Int;
+	public static Integer SuperAdminUserNotDelete_Int;
+	public static String  SuperAdminUserNotDelete;
 	static {
 		StaticValues.codecustomerontexists_Int = -2;
 		StaticValues.codecustomerontexists = "code customer doesn' exists or user doens't have right on this customer id";
@@ -292,8 +320,8 @@ public class StaticValues {
 		StaticValues.linkerrorpleasecheck_Int = -50;
 		StaticValues.InvalidId = "Invalid ID thought LINK";
 		StaticValues.InvalidId_Int = -50;
-		StaticValues.InvalidId = "Reset Password Link Expire please retry with reset password";
-		StaticValues.InvalidId_Int = -51;
+		StaticValues.InvalidIds = "Reset Password Link Expire please retry with reset password";
+		StaticValues.InvalidIds_Int = -51;
 		StaticValues.passwordisempty = "Your Password is Empty please change to another one";
 		StaticValues.passwordisempty_Int = -52;
 		StaticValues.ConnectedBeforecheckingMFA = "Please Connected Before Check Double Authentification";
@@ -348,7 +376,41 @@ public class StaticValues {
 
 		StaticValues.ErrorOnSendingEMail = "Error On Sending Email, please contant CAMTRACK SUPPORT TEAM";
 		StaticValues.ErrorOnSendingEMail_Int = -70;
-
+		StaticValues.UsernameIncorrect2 = "Username incorrect";
+		// StaticValues.UsernameIncorrect = "Username or Password Incorrect";
+		StaticValues.UsernameIncorrect2_Int = -71;
 		StaticValues.BadParameters = "BAD PARAMETERS";
+
+		StaticValues.Chevauchement = "Chevauchement On Night Driving Period please change";
+		StaticValues.Chevauchement_Int = -72;
+
+		StaticValues.StartMonthLowerThanEndMonth = "Start Month Must Be Lower Than EndMonth";
+		StaticValues.StartMonthLowerThanEndMonth_Int = -73;
+
+		StaticValues.BeforeDeletePleaseUserRolePleaseRemoveRoleOnUser_Int = -74;
+		StaticValues.BeforeDeletePleaseUserRolePleaseRemoveRoleOnUser = "Before Delete UserRole Please Remove Role On User";
+		StaticValues.TypeInfosNotExits_Int = -75;
+		StaticValues.TypeInfosNotExits = "Value of Type doesn't exists Possible value: 1: Customer,2:Affiliate,3:Transporter,4:Vehicle,5:Driver";
+
+		StaticValues.ListEmailAndWhattsapEquals = "Email And Whattsapp must be equals in length";
+		StaticValues.ListEmailAndWhattsapEquals_Int = -76;
+
+		StaticValues.NotEmailOrWhattsapp = "No Information on email or whattsapp configuration";
+		StaticValues.NotEmailOrWhattsapp_Int = -77;
+
+		StaticValues.WrongEmailFormat = "Wrong Email Format";
+		StaticValues.WrongEmailFormat_Int = -78;
+
+		StaticValues.NotRightToGiveRightToAnotherUserIfYouDontHaveItYourselt = "You cannot give rights that you do not have";
+		StaticValues.NotRightToGiveRightToAnotherUserIfYouDontHaveItYourselt_Int = -79;
+
+		StaticValues.FirstDateRequired = "FirstDate is Required";
+		StaticValues.FirstDateRequired_Int = -80;
+		StaticValues.SubjectRequired = "Subject is Required";
+		StaticValues.SubjectRequired_Int = -81;
+		StaticValues.SuperAdminUserNotDelete = "You cannot delete a super administrator. Please Contact System Administrator";
+		StaticValues.SuperAdminUserNotDelete_Int = -82;
+		
+
 	}
 }

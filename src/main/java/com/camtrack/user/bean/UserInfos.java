@@ -33,6 +33,15 @@ public class UserInfos implements Serializable {
 	private String imguser;
 	private String imgcus;
 	private String cln;
+	private String stream;
+
+	public String getStream() {
+		return stream;
+	}
+
+	public void setStream(String stream) {
+		this.stream = stream;
+	}
 
 	public String getCln() {
 		return cln;

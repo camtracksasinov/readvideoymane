@@ -1,4 +1,3 @@
-//
 // Decompiled by Procyon v0.5.30
 //
 
@@ -8,11 +7,11 @@ import java.io.Serializable;
 
 public class CreateEntityRole implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private Boolean alarmlevel;
-	private Boolean alertlevel;
-	private Integer entityid;
+	private Boolean alarmlevel = false;
+	private Boolean alertlevel = false;
+	private Integer entityid = 0;
 	private Integer[] listidtypeexception;
-	private Boolean recordlevel;
+	private Boolean recordlevel = false;
 
 	public Boolean getAlarmlevel() {
 		return this.alarmlevel;

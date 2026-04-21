@@ -11,13 +11,17 @@ import com.camtrack.config.Utils;
 
 public class ListEmailConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
-	String emailuser;
+	List<SmallWhattsappEmail> whattsapemail;
 	List<SmallEmailConfigBean> listconfig;
 	String nameuser;
 	Integer userid;
 
-	public String getEmailuser() {
-		return Utils.StringEscape(this.emailuser);
+	public List<SmallWhattsappEmail> getWhattsapemail() {
+		return whattsapemail;
+	}
+
+	public void setWhattsapemail(List<SmallWhattsappEmail> whattsapemail) {
+		this.whattsapemail = whattsapemail;
 	}
 
 	public List<SmallEmailConfigBean> getListconfig() {
@@ -30,10 +34,6 @@ public class ListEmailConfig implements Serializable {
 
 	public Integer getUserid() {
 		return this.userid;
-	}
-
-	public void setEmailuser(final String emailuser) {
-		this.emailuser = emailuser;
 	}
 
 	public void setListconfig(final List<SmallEmailConfigBean> listconfig) {

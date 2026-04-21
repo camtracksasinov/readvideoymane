@@ -54,5 +54,8 @@ public interface UsersRepository extends JpaRepository<User, Integer> {
 
 	@Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.emailid = ?2")
 	@Modifying
-	public void updateFailedAttempts(Short failAttempts, String email);
+	Integer updateFailedAttempts(Short failAttempts, String email);
+
+	@Query(value = "select distinct u.name from  users u  where u.reelrole =:roleid and  u.enabled = true", nativeQuery = true)
+	List<String> findByRoleId(Integer roleid);
 }

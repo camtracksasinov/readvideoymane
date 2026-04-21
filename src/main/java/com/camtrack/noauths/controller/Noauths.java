@@ -1,4 +1,3 @@
-//
 // Decompiled by Procyon v0.5.30
 //
 
@@ -23,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -95,7 +95,10 @@ public class Noauths {
 	// password -- > is2
 	@RequestMapping(value = { "/alhumm2" }, method = { RequestMethod.POST })
 	@RequiresCaptcha
-	public ResponseEntity<?> alhumm2(@org.springframework.web.bind.annotation.RequestBody Is1Object is1is2,
+	// @Parameter(in = ParameterIn.HEADER, required = true, name =
+	// "g-recaptcha-response")
+	public ResponseEntity<?> alhumm2(@RequestHeader(value = "g-recaptcha-response") String grecaptcharesponse,
+			@org.springframework.web.bind.annotation.RequestBody Is1Object is1is2,
 			@Parameter(hidden = true) HttpServletRequest request,
 			@Parameter(hidden = true) HttpServletResponse response) throws Exception {
 		try {
@@ -288,6 +291,48 @@ public class Noauths {
 				return ResponseEntity.status(HttpStatus.OK).body(new Success(StaticValues.ConnectedBeforecheckingMFA,
 						StaticValues.ConnectedBeforecheckingMFA_Int));
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
+	@RequestMapping(value = { "/hummreload" }, method = { RequestMethod.POST })
+	public ResponseEntity<?> hummreload(String rtoken) throws Exception {
+		try {
+			/**
+			 * OkHttpClient client = new OkHttpClient(); MediaType mediaType =
+			 * MediaType.parse("application/x-www-form-urlencoded"); String decrypt =
+			 * Encryption.decrypt(user.getNops()); RequestBody body =
+			 * RequestBody.create(mediaType, "username=" + username + "&password=" + decrypt
+			 * + "&grant_type=password&client_id=ymaneprod"); Request request = new
+			 * Request.Builder().url("http://localhost:" + localServerPort + "/oauth/token")
+			 * .method("POST", body).addHeader("Authorization", "Basic
+			 * eW1hbmVwcm9kOjEyMzQ1Ng==") .addHeader("Content-Type",
+			 * "application/x-www-form-urlencoded").build();
+			 * 
+			 */
+			OkHttpClient client = new OkHttpClient();
+			// .build();
+			MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+			// MediaType mediaType = MediaType.parse("text/plain");
+			/**
+			 * RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+			 * .addFormDataPart("grant_type","refresh_token")
+			 * .addFormDataPart("refresh_token","929e2b24-5f4e-4d1a-a337-f6489d26357c")
+			 * .build();
+			 */
+			RequestBody body = RequestBody.create(mediaType, "grant_type=refresh_token&refresh_token=" + rtoken);
+			Request request = new Request.Builder().url("http://localhost:" + localServerPort + "/oauth/token")
+					.method("POST", body).addHeader("Authorization", "Basic eW1hbmVwcm9kOjEyMzQ1Ng==")
+					.addHeader("Content-Type", "application/x-www-form-urlencoded").build();
+			// Response response = client.newCall(request).execute();
+
+			ResponseBody response = client.newCall(request).execute().body();
+			String responsess = response.string();
+			return ResponseEntity.status(HttpStatus.OK).body(responsess);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

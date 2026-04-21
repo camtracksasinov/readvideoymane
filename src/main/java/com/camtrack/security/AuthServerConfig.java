@@ -1,6 +1,5 @@
-//
-// Decompiled by Procyon v0.5.30
-//
+// 
+// 
 
 package com.camtrack.security;
 
@@ -20,105 +19,81 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import com.camtrack.security.errors.CustomOauthException;
 
 @Configuration
 @EnableAuthorizationServer
-public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
-	public static int accessTokenValiditySeconds() {
-		return 14400;
-	}
-
-	public static int refreshTokenValiditySeconds() {
-		return 144000;
-	}
-
-	@Autowired
-	AuthenticationManager authMgr;
-	@Autowired
-	DataSource ds;
-
-	@Value("${apps.security.access.token.validity}")
-	private Integer security_access_token_validity;
-
-	@Autowired
-	private UserDetailsService usrSvc;
-
-	@Bean
-	public DefaultAccessTokenConverter accessTokenConverter() {
-		return new DefaultAccessTokenConverter();
-	}
-
-	@Override
-	public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.tokenStore(this.tokenStore());
-		endpoints.authenticationManager(this.authMgr);
-		endpoints.userDetailsService(this.usrSvc);
-		endpoints.tokenEnhancer(this.tokenEnhancer());
-		endpoints.accessTokenConverter(this.accessTokenConverter());
-		endpoints.tokenServices(this.tokenServices());
-		endpoints.exceptionTranslator(exception -> {
-			if (exception instanceof OAuth2Exception) {
-				final OAuth2Exception oAuth2Exception = (OAuth2Exception) exception;
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(new CustomOauthException(oAuth2Exception.getMessage()));
-			}
-			throw exception;
-		});
-	}
-
-	/**
-	 * @Bean({ "clientPasswordEncoder" }) PasswordEncoder clientPasswordEncoder() {
-	 * return (PasswordEncoder)new BCryptPasswordEncoder(8); }
-	 */
-	/**
-	 * public void configure(final AuthorizationServerSecurityConfigurer cfg) throws
-	 * Exception { final UrlBasedCorsConfigurationSource source = new
-	 * UrlBasedCorsConfigurationSource(); final CorsConfiguration config = new
-	 * CorsConfiguration(); config.addAllowedOrigin("*");
-	 * config.addAllowedHeader("*"); config.addAllowedMethod("*");
-	 * config.setMaxAge(600L); source.registerCorsConfiguration("/**", config);
-	 * final CorsFilter filter = new CorsFilter((CorsConfigurationSource)source);
-	 * cfg.addTokenEndpointAuthenticationFilter((Filter)filter);
-	 * cfg.checkTokenAccess("permitAll");
-	 * cfg.passwordEncoder(this.clientPasswordEncoder()); }
-	 */
-
-	@Override
-	public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.jdbc(this.ds);
-	}
-
-	@Bean
-	public TokenEnhancer tokenEnhancer() {
-		return new CustomTokenConverter();
-	}
-
-	@Bean
-	@Primary
-	public DefaultTokenServices tokenServices() {
-		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-		defaultTokenServices.setTokenStore(this.tokenStore());
-		defaultTokenServices.setSupportRefreshToken(true);
-		defaultTokenServices.setTokenEnhancer(this.tokenEnhancer());
-
-		defaultTokenServices.setAccessTokenValiditySeconds(security_access_token_validity);
-		defaultTokenServices.setRefreshTokenValiditySeconds(security_access_token_validity * 2);
-		return defaultTokenServices;
-	}
-
-	/**
-	 * @Autowired private ClientDetailsService clientDetails;
-	 */
-
-	@Bean
-	public TokenStore tokenStore() {
-		return new JdbcTokenStore(this.ds);
-	}
+public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
+{
+    @Autowired
+    AuthenticationManager authMgr;
+    @Autowired
+    DataSource ds;
+    @Value("${apps.security.access.token.validity}")
+    private Integer security_access_token_validity;
+    @Autowired
+    private UserDetailsService usrSvc;
+    
+    public static int accessTokenValiditySeconds() {
+        return 14400;
+    }
+    
+    public static int refreshTokenValiditySeconds() {
+        return 144000;
+    }
+    
+    @Bean
+    public DefaultAccessTokenConverter accessTokenConverter() {
+        return new DefaultAccessTokenConverter();
+    }
+    
+    public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.tokenStore(this.tokenStore());
+        endpoints.authenticationManager(this.authMgr);
+        endpoints.userDetailsService(this.usrSvc);
+        endpoints.tokenEnhancer(this.tokenEnhancer());
+        endpoints.accessTokenConverter((AccessTokenConverter)this.accessTokenConverter());
+        endpoints.tokenServices((AuthorizationServerTokenServices)this.tokenServices());
+        endpoints.exceptionTranslator(exception -> {
+            if (exception instanceof OAuth2Exception) {
+                final OAuth2Exception oAuth2Exception = (OAuth2Exception)exception;
+                return ResponseEntity.status(HttpStatus.OK).body(new CustomOauthException(oAuth2Exception.getMessage()));
+            }
+            throw exception;
+        });
+    }
+    
+    public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.jdbc(this.ds);
+    }
+    
+    @Bean
+    public TokenEnhancer tokenEnhancer() {
+        return (TokenEnhancer)new CustomTokenConverter();
+    }
+    
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setTokenStore(this.tokenStore());
+        defaultTokenServices.setSupportRefreshToken(true);
+        defaultTokenServices.setTokenEnhancer(this.tokenEnhancer());
+        defaultTokenServices.setAccessTokenValiditySeconds(this.security_access_token_validity * 6);
+        defaultTokenServices.setRefreshTokenValiditySeconds(this.security_access_token_validity * 16);
+        return defaultTokenServices;
+    }
+    
+    @Bean
+    public TokenStore tokenStore() {
+        // CustomJdbcTokenStore gere l'incompatibilite serialVersionUID apres migration Spring Boot 2.5.3 -> 2.7.18
+        return new CustomJdbcTokenStore(this.ds);
+    }
 }

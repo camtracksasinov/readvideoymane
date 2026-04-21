@@ -17,10 +17,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			final Object handler, final ModelAndView modelAndView) throws Exception {
 		// httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,
 		// OPTIONS, DELETE");
-		// httpResponse.setHeader("Access-Control-Allow-Headers", "*");
-		httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+		httpResponse.setHeader("Access-Control-Allow-Headers", "*");
+		// httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
 
-		// httpResponse.setHeader("Access-Control-Max-Age", "4800");
+		httpResponse.setHeader("Access-Control-Max-Age", "4800");
 		// httpResponse.setHeader("Access-Control-Allow-Origin", "*");
 	}
 

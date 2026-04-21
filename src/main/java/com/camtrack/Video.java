@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import com.camtrack.config.Encryption;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 import io.swagger.v3.oas.models.Components;
@@ -77,7 +78,7 @@ import io.swagger.v3.oas.models.OpenAPI;*/
 @EnableEncryptableProperties
 @EnableCaching
 /**
- * @OpenAPIDefinition(info = @Info(title = "Ymane API", description =
+ * @OpenAPIDefinition(info = @Info(title = "Video API", description =
  *                         "Documentation Ymanege API v1.0", version = "2.0",
  *                         contact = @Contact( name = "Camtrack Team", email =
  *                         "suppport@camtrack.net", url = "https://camtrack.net"
@@ -91,9 +92,16 @@ import io.swagger.v3.oas.models.OpenAPI;*/
  *                         type = SecuritySchemeType.HTTP, scheme = "bearer",
  *                         bearerFormat = "Bearer [token]")))
  */
-public class Ymane {
+public class Video {
 	public static void main(final String[] args) {
-		SpringApplication.run((Class) Ymane.class, args);
+		String decrypt = "";
+		try {
+			decrypt = Encryption.decrypt("jqeeuYXfoLnQM0sdazxiEQ==");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SpringApplication.run((Class) Video.class, args);
 	}
 
 	final String bearerToken = "This value is Mandatory ; Format Token:   bearer xxxxx";
@@ -110,7 +118,7 @@ public class Ymane {
 	 */
 
 	private Info apiInfo() {
-		return new Info().title("Ymane API").description("Documentation Ymanege API v1.0").version("2.0")
+		return new Info().title("Video API").description("Documentation Ymanege API v1.0").version("2.0")
 				.contact(apiContact()).license(apiLicence());
 	}
 
@@ -123,8 +131,8 @@ public class Ymane {
 	}
 
 	/**
-	 * private ApiInfo apiInfo() { return new ApiInfo("Ymane Rest API", "Services
-	 * For Ymane Dashboard Management.", "API TOS", "Terms of service", new
+	 * private ApiInfo apiInfo() { return new ApiInfo("Video Rest API", "Services
+	 * For Video Dashboard Management.", "API TOS", "Terms of service", new
 	 * Contact("Hilaire Tinen", "https://camtrack.net", "support@camtrack.net"),
 	 * "License of API", "API license URL", (Collection) Collections.emptyList()); }
 	 */
@@ -133,7 +141,7 @@ public class Ymane {
 	public OpenAPI customOpenAPI() {
 		final String securitySchemeName = "bearerAuth";
 
-		return new OpenAPI().servers(Arrays.asList(new Server().description("Default Ymane Server URL").url("/ymane")))
+		return new OpenAPI().servers(Arrays.asList(new Server().description("Default Video Server URL").url("/ymane")))
 				.addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
 				.components(new Components().addSecuritySchemes(securitySchemeName,
 						new SecurityScheme().type(SecurityScheme.Type.HTTP).in(SecurityScheme.In.HEADER)

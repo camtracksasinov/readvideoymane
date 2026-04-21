@@ -7,9 +7,14 @@ package com.camtrack.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.Email;
+
 import com.camtrack.config.Utils;
 import com.camtrack.config.passwordmanagement.ValidPassword;
 
+import lombok.Data;
+
+@Data
 public class Userallidroles implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Boolean activateuser;
@@ -21,6 +26,7 @@ public class Userallidroles implements Serializable {
 	private Integer languageid;
 	private Boolean mfa;
 	private String names;
+	@Email(message = "Wrong Format for Email.")
 	private String newemail;
 	@ValidPassword
 	private String newpassword;

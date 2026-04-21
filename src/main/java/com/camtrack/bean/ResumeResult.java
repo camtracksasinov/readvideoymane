@@ -5,14 +5,15 @@
 package com.camtrack.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ResumeResult implements Serializable {
 	private static final long serialVersionUID = 1L;
-	List<Map<String, Object>> invalidresult;
-	List<Map<String, Object>> result;
-	private Integer typeInfos;
+	List<Map<String, Object>> invalidresult = new ArrayList<>();
+	List<Map<String, Object>> result = new ArrayList<>();
+	private Integer typeInfos = 0;
 
 	public ResumeResult(final List<Map<String, Object>> result, final List<Map<String, Object>> invalidresult,
 			final Integer typeInfos) {

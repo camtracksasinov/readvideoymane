@@ -21,11 +21,11 @@ public class CacheConfig extends CachingConfigurerSupport {
 				"getscoremap", "safetyranking", "fetchallmenus", "listtyperole", "status", "listformatrepor",
 				"listfrequence", "listimerange", "lisreportname", "scpobcparams", "scprecovery", "visualparameter",
 				"detailexception", "groupinvalidation", "invalidatedexception", "listexceptlevel", "listexcepttype",
-				"resumedriverandvehicle", "resumeworktime", "resumeexception", "resume100km", "trendistance",
-				"trendresume", "trendresume100km", "worktime", "fechclients", "fetchallcountries", "fetchalllangues",
-				"activedriverandvehicle", "activeordriverpersearch", "resumeactivedrive", "toprankingcaches",
-				"dashboardcaches", "exceptioncaches", "clientcache", "manualsubstraction", "scorecaches",
-				"rolemenucache", "transportercache", "usercaches", "listreelexception");
+				"resumedriverandvehicle", "resumeworktime", "resumeexception", "resume100km", "worktime", "fechclients",
+				"fetchallcountries", "fetchalllangues", "activedriverandvehicle", "activeordriverpersearch",
+				"resumeactivedrive", "toprankingcaches", "dashboardcaches", "exceptioncaches", "clientcache",
+				"manualsubstraction", "scorecaches", "rolemenucache", "transportercache", "usercaches",
+				"listreelexception", "resumeactivedriveandvehicle", "detailexceptionbypages");
 		cacheManager.setCaffeine(caffeineCacheBuilder());
 		return cacheManager;
 	}

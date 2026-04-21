@@ -79,7 +79,7 @@ public class Emailconfig implements Serializable {
 	@Column(name = "listotheremailreceiver")
 	private String listotheremailreceiver;
 	@Column(name = "mailflag")
-	private Integer mailflag;
+	private Integer mailflag = 0;
 	@JoinColumn(name = "paramtypeid", referencedColumnName = "parametertypeid")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Parametertype paramtypeid;
@@ -101,6 +101,73 @@ public class Emailconfig implements Serializable {
 	@JoinColumn(name = "vehicleid", referencedColumnName = "vehicleid")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Vehicle vehicleid;
+
+	private Integer whatsappflag = 0;
+	private String listotherwhatsappreceiver;
+
+	public static String getLog() {
+		return log;
+	}
+
+	public static void setLog(String log) {
+		Emailconfig.log = log;
+	}
+
+	public Integer getWhatsappflag() {
+		return whatsappflag;
+	}
+
+	public void setWhatsappflag(Integer whatsappflag) {
+		this.whatsappflag = whatsappflag;
+	}
+
+	public String getListotherwhatsappreceiver() {
+		return listotherwhatsappreceiver;
+	}
+
+	public void setListotherwhatsappreceiver(String listotherwhatsappreceiver) {
+		this.listotherwhatsappreceiver = listotherwhatsappreceiver;
+	}
+
+	public void setAffiliateid(Customeraffiliate affiliateid) {
+		this.affiliateid = affiliateid;
+	}
+
+	public void setAlarmstatus(Boolean alarmstatus) {
+		this.alarmstatus = alarmstatus;
+	}
+
+	public void setAlertstatus(Boolean alertstatus) {
+		this.alertstatus = alertstatus;
+	}
+
+	public void setClientid(Customer clientid) {
+		this.clientid = clientid;
+	}
+
+	public void setListotheremailreceiver(String listotheremailreceiver) {
+		this.listotheremailreceiver = listotheremailreceiver;
+	}
+
+	public void setParamtypeid(Parametertype paramtypeid) {
+		this.paramtypeid = paramtypeid;
+	}
+
+	public void setRecordstatus(Boolean recordstatus) {
+		this.recordstatus = recordstatus;
+	}
+
+	public void setTransporterid(Transporter transporterid) {
+		this.transporterid = transporterid;
+	}
+
+	public void setUserid(User userid) {
+		this.userid = userid;
+	}
+
+	public void setVehicleid(Vehicle vehicleid) {
+		this.vehicleid = vehicleid;
+	}
 
 	public Emailconfig() {
 	}

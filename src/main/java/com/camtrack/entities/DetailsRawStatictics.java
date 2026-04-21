@@ -3,6 +3,8 @@ package com.camtrack.entities;
 import java.io.Serializable;
 import java.util.List;
 
+import org.json.JSONArray;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -13,13 +15,13 @@ public class DetailsRawStatictics implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer initp;
 	private Integer remainp;
-	private String acc;
+	private JSONArray acc;
 
-	public String getAcc() {
+	public JSONArray getAcc() {
 		return acc;
 	}
 
-	public void setAcc(String acc) {
+	public void setAcc(JSONArray acc) {
 		this.acc = acc;
 	}
 

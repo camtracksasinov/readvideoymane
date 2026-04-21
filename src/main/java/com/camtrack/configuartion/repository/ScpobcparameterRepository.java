@@ -6,7 +6,10 @@ package com.camtrack.configuartion.repository;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.camtrack.entities.Scpobcparameter;
@@ -15,4 +18,9 @@ public interface ScpobcparameterRepository extends JpaRepository<Scpobcparameter
 	@Query("from  Scpobcparameter scp  where scp.status = 1 and scp.clientid = :cus and scp.affiliateid = :affid and scp.transporterid = :transid and scp.obcparamid = :obcparamid")
 	Optional<Scpobcparameter> findUniqueSCP(final Integer cus, final Integer affid, final Integer transid,
 			final Integer obcparamid);
+
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	@Query(value = "delete from scpobcparameter scp  where scp  where scp.clientid = :cus and scp.affiliateid = :affid and scp.transporterid = :transid", nativeQuery = true)
+	int deletescpobcparameter(final Integer cus, final Integer affid, final Integer transid);
 }

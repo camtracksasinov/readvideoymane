@@ -59,6 +59,10 @@ public class Scp implements Serializable {
 		Scp.log = Utils.EntetesLog(createorupdate, user.getUsername(), "SCP Parameter");
 	}
 
+	public static void delete(User user) {
+		Scp.log = Utils.DeleteLog(user.getUsername(), "SCP Parameter");
+	}
+
 	@Column(name = "affiliateid")
 	private Integer affiliateid;
 	@Column(name = "clientid")

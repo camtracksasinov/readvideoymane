@@ -59,7 +59,7 @@ public class Accessrights implements Serializable {
 	@Column(name = "accessrightsid")
 	private Integer accessrightsid;
 	@Column(name = "add")
-	private Boolean add;
+	private Boolean add = false;
 	@JsonIgnore
 	@JoinColumn(name = "createdby", referencedColumnName = "userid")
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -69,9 +69,9 @@ public class Accessrights implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdon;
 	@Column(name = "delete")
-	private Boolean delete;
+	private Boolean delete = false;
 	@Column(name = "edit")
-	private Boolean edit;
+	private Boolean edit = false;
 	@JoinColumn(name = "menuid", referencedColumnName = "menuid")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Menu menuid;
@@ -94,7 +94,7 @@ public class Accessrights implements Serializable {
 	private Userrole userroleid;
 
 	@Column(name = "view")
-	private Boolean view;
+	private Boolean view = false;
 
 	public Accessrights() {
 	}

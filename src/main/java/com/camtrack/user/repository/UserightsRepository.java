@@ -1,4 +1,3 @@
-//
 // Decompiled by Procyon v0.5.30
 //
 
@@ -18,6 +17,28 @@ import com.camtrack.entities.Transporter;
 import com.camtrack.entities.Userights;
 
 public interface UserightsRepository extends JpaRepository<Userights, Integer> {
+
+	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.affiliateid.affiliateid = :affiliateid and userr.idtypealert.parametertypeid = :parametertypeid")
+	Optional<Userights> findUserightsForAffiliate(final Integer userid, final Integer affiliateid,
+			final Integer parametertypeid);
+
+	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.customerid.customerid = :customerid and userr.idtypealert.parametertypeid = :parametertypeid")
+	Optional<Userights> findUserightsForCustomer(final Integer userid, final Integer customerid,
+			final Integer parametertypeid);
+
+	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.transporterid.transporterid = :transporterid and userr.idtypealert.parametertypeid = :parametertypeid")
+	Optional<Userights> findUserightsForTransporter(final Integer userid, final Integer transporterid,
+			final Integer parametertypeid);
+
+	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.affiliateid.affiliateid = :affiliateid")
+	List<Userights> findListUserightsForAffiliate(final Integer userid, final Integer affiliateid);
+
+	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.customerid.customerid = :customerid")
+	List<Userights> findListUserightsForCustomer(final Integer userid, final Integer customerid);
+
+	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.transporterid.transporterid = :transporterid")
+	List<Userights> findListUserightsForTransporter(final Integer userid, final Integer transporterid);
+
 	@Query("from Userights userr where  userr.status = 1 and userr.userid.enabled = true order by userr.userid.userid")
 	List<Userights> findActivesUsers();
 
@@ -107,33 +128,29 @@ public interface UserightsRepository extends JpaRepository<Userights, Integer> {
 	@Query("from Userights userr where  userr.status = 1 and userr.customerid.customerid in :listcostomerid and userr.transporterid is null  and userr.affiliateid is null order by userr.userid.userid")
 	List<Userights> findUserCustomerLevel(final List<Integer> listcostomerid);
 
-	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.affiliateid.affiliateid = :affiliateid and userr.idtypealert.parametertypeid = :parametertypeid")
-	Optional<Userights> findUserightsForAffiliate(final Integer userid, final Integer affiliateid,
-			final Integer parametertypeid);
-
-	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.customerid.customerid = :customerid and userr.idtypealert.parametertypeid = :parametertypeid")
-	Optional<Userights> findUserightsForCustomer(final Integer userid, final Integer customerid,
-			final Integer parametertypeid);
-
-	@Query("from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.transporterid.transporterid = :transporterid and userr.idtypealert.parametertypeid = :parametertypeid")
-	Optional<Userights> findUserightsForTransporter(final Integer userid, final Integer transporterid,
-			final Integer parametertypeid);
-
 	@Query("from Userights userr where  userr.status = 1 and userr.transporterid.transporterid in :listtransporterid order by userr.userid.userid")
 	List<Userights> findUserTransporterLevel(final List<Integer> listtransporterid);
 
 	@Modifying
 	@Transactional
 	@Query(value = "update userights set status = 0 where userid = :userid and (customerid is not null or transporterid is not null)", nativeQuery = true)
-	void Updateaffiliatestatus(final Integer userid);
+	Integer Updateaffiliatestatus(final Integer userid);
+
+	@Modifying
+	@Transactional
+	@Query(value = "delete from userights where userid = :userid", nativeQuery = true)
+	Integer deleteAllUsersRights(Integer userid);
 
 	@Modifying
 	@Transactional
 	@Query(value = "update userights set status = 0 where userid = :userid and (affiliateid is not null or transporterid is not null)", nativeQuery = true)
-	void Updatecustomerstatus(final Integer userid);
+	Integer Updatecustomerstatus(final Integer userid);
 
 	@Modifying
 	@Transactional
 	@Query(value = "update userights set status = 0 where userid = :userid and (customerid is not null or affiliateid is not null)", nativeQuery = true)
-	void Updatetransporterstatus(final Integer userid);
+	Integer Updatetransporterstatus(final Integer userid);
+
+	@Query("select distinct userr.alertlevel,userr.alarmlevel,userr.recordlevel from Userights userr where  userr.status = 1 and userr.userid.userid = :userid and userr.transporterid.transporterid = :transporterid and userr.customerid is null and userr.affiliateid is null")
+	List<Object[]> findAllAlertLevelFromTransporter(Integer transporterid, Integer userid);
 }

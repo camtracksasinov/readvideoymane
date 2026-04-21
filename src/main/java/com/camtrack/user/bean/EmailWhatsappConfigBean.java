@@ -7,28 +7,13 @@ package com.camtrack.user.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import com.camtrack.config.Utils;
-
-public class EmailConfigBean implements Serializable {
+public class EmailWhatsappConfigBean implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String emailuser;
-	private String listphoneforwhattsapp;
+	private List<SmallWhattsappEmail> emailwhatsap;
 	private List<Levelbean> levelbeam;
 	private List<Integer> listelementsid;
 	private Integer typelementsid;
 	private Integer userid;
-
-	public String getListphoneforwhattsapp() {
-		return listphoneforwhattsapp;
-	}
-
-	public void setListphoneforwhattsapp(String listphoneforwhattsapp) {
-		this.listphoneforwhattsapp = listphoneforwhattsapp;
-	}
-
-	public String getEmailuser() {
-		return Utils.StringEscape(this.emailuser);
-	}
 
 	public List<Levelbean> getLevelbeam() {
 		return this.levelbeam;
@@ -46,8 +31,12 @@ public class EmailConfigBean implements Serializable {
 		return this.userid;
 	}
 
-	public void setEmailuser(final String emailuser) {
-		this.emailuser = emailuser;
+	public List<SmallWhattsappEmail> getEmailwhatsap() {
+		return emailwhatsap;
+	}
+
+	public void setEmailwhatsap(List<SmallWhattsappEmail> emailwhatsap) {
+		this.emailwhatsap = emailwhatsap;
 	}
 
 	public void setLevelbeam(final List<Levelbean> levelbeam) {

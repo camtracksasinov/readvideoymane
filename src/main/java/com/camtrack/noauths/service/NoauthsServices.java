@@ -5,6 +5,7 @@
 package com.camtrack.noauths.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -36,7 +37,6 @@ import com.camtrack.entities.User;
 import com.camtrack.mfauthentification.bean.MfaTokenData;
 import com.camtrack.mfauthentification.dao.MFATokenManager;
 import com.camtrack.security.CustomLoginFailureHandler;
-import com.camtrack.transporter.repository.TransporterRepository;
 import com.camtrack.user.repository.DriverRepository;
 import com.camtrack.user.repository.LinkloastpasswordRepository;
 import com.camtrack.user.repository.LostpasswordRepository;
@@ -89,11 +89,7 @@ public class NoauthsServices implements NoauthInterface {
 	@Autowired
 	MFATokenManager mfaTokenManager;
 	@Autowired
-	NoauthInterface noaths;
-	@Autowired
 	PasswordEncoder passwordEncoder;
-	@Autowired
-	TransporterRepository transR;
 	@Autowired
 	UsersRepository userR;
 	@Autowired
@@ -120,6 +116,31 @@ public class NoauthsServices implements NoauthInterface {
 			accesstokenR.deleteOauthAccessToken(user.getUsername());
 
 			if (user.isMfa()) {
+
+				user.setLpw(true);
+				user.setPassword(Utils.encodeBcriptPassword(newpwd), maxdaysvalidation, false);
+				user.setIsconn(true);
+				user.setNops(Encryption.encrypt(newpwd));
+				userR.saveAndFlush(user);
+
+				OkHttpClient client = new OkHttpClient();
+				MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+				RequestBody body = RequestBody.create(mediaType,
+						"username=" + username + "&password=" + newpwd + "&grant_type=password&client_id=ymaneprod");
+				Request request = new Request.Builder().url("http://localhost:" + localServerPort + "/oauth/token")
+						.method("POST", body).addHeader("Authorization", "Basic eW1hbmVwcm9kOjEyMzQ1Ng==")
+						.addHeader("Content-Type", "application/x-www-form-urlencoded").build();
+
+				ResponseBody response = client.newCall(request).execute().body();
+				String responsess = response.string();
+				try {
+					JSONObject json = new JSONObject(responsess);
+					user.setLls(json.getString("access_token"));
+				} catch (Exception ex) {
+					user.setLls("");
+				}
+				userR.saveAndFlush(user);
+
 				return ResponseEntity.status(HttpStatus.OK).body(new SuccessMFA(StaticValues.successConnected,
 						StaticValues.successConnected_Int, user.isMfa(), user.isIsconn()));
 			} else {
@@ -160,7 +181,7 @@ public class NoauthsServices implements NoauthInterface {
 			User user = userR.findrandoms(randoms).orElse(null);
 			if (Objects.isNull(user)) {
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(new Success(StaticValues.UsernameIncorrect, StaticValues.UsernameIncorrect_Int));
+						.body(new Success(StaticValues.UsernameIncorrect2, StaticValues.UsernameIncorrect2_Int));
 			}
 
 			if (user.getLpw()) {
@@ -388,7 +409,7 @@ public class NoauthsServices implements NoauthInterface {
 		User user2;
 		if (Objects.isNull(user)) {
 			return ResponseEntity.status(HttpStatus.OK)
-					.body(new Success(StaticValues.UsernameIncorrect, StaticValues.UsernameIncorrect_Int));
+					.body(new Success(StaticValues.UsernameIncorrect2, StaticValues.UsernameIncorrect2_Int));
 		}
 		final String EmailUser = user.getEmailid();
 		if (Objects.isNull(EmailUser)) {
@@ -484,6 +505,19 @@ public class NoauthsServices implements NoauthInterface {
 
 				int k = 0 + 8;
 				Date datu = user.getLockTime();
+				if (!Objects.isNull(datu)) {
+					SimpleDateFormat simpe = new SimpleDateFormat("yyyyMMdd");
+					if (!(simpe.format(datu).equals(simpe.format(dat)))) {
+						user.setFailedAttempt(Short.valueOf("0"));
+						user.setLockTime(null);
+						user.setAccountNonLocked(true, false);
+						user.setFlockd(null);
+						user.setFlockn(Short.valueOf("0"));
+						// userR.saveAndFlush(user);
+						userR.saveAndFlush(user);
+					}
+
+				}
 				if (!Objects.isNull(datu) && user.getFailedAttempt().intValue() >= (MAX_FAILED_ATTEMPTS - 1)) {
 
 					calendaru = Calendar.getInstance();
@@ -524,14 +558,14 @@ public class NoauthsServices implements NoauthInterface {
 										.body(new Success(
 												StaticValues.WrongAttempFail.replace("XXXX",
 														MAX_FAILED_ATTEMPTS_initialhour + "") + " at "
-														+ Utils.DateFormat(datu, "yyyy-MM-dd HH:mm:ss"),
+														+ Utils.DateFormat(datu, "yyyy-MM-dd HH:mm:ss") + " GMT ",
 												StaticValues.WrongAttempFail_Int));
 							} else if (user.getFlockn().intValue() >= MAX_FAILED_ATTEMPTS_limitnumberend) {
 								return ResponseEntity.status(HttpStatus.OK)
 										.body(new Success(
 												StaticValues.WrongAttempFail22.replace("XXXX",
 														MAX_FAILED_ATTEMPTS_secondhour + "") + " at "
-														+ Utils.DateFormat(datu, "yyyy-MM-dd HH:mm:ss"),
+														+ Utils.DateFormat(datu, "yyyy-MM-dd HH:mm:ss") + " GMT ",
 												StaticValues.WrongAttempFail22_Int));
 							}
 						}
@@ -550,6 +584,10 @@ public class NoauthsServices implements NoauthInterface {
 					}
 				}
 				accesstokenR.deleteOauthAccessToken(username);
+				user.setFailedAttempt(Short.valueOf("0"));
+				user.setLockTime(null);
+				user.setAccountNonLocked(true, false);
+
 				if (user.isFirst()) {
 					if (Objects.isNull(user.getSecret())) {
 						user.setSecret(mfaTokenManager.generateSecretKey());
@@ -577,7 +615,9 @@ public class NoauthsServices implements NoauthInterface {
 					return customAuthenticationSuccessHandler.onAuthenticationFailure(username);
 				}
 				accesstokenR.deleteOauthAccessToken(username);
-
+				user.setFailedAttempt(Short.valueOf("0"));
+				user.setLockTime(null);
+				user.setAccountNonLocked(true, false);
 				OkHttpClient client = new OkHttpClient();
 				MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
 				RequestBody body = RequestBody.create(mediaType,
@@ -613,7 +653,7 @@ public class NoauthsServices implements NoauthInterface {
 			if (Objects.isNull(user)) {
 			}
 			return ResponseEntity.status(HttpStatus.OK)
-					.body(new Success(StaticValues.UsernameIncorrect, StaticValues.UsernameIncorrect_Int));
+					.body(new Success(StaticValues.UsernameIncorrect2, StaticValues.UsernameIncorrect2_Int));
 		}
 		final Lostpassword lost = this.lostpassR.findById(linkid).orElse(null);
 		if (Objects.isNull(lost)) {

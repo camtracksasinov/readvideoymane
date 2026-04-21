@@ -15,11 +15,9 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
-import com.camtrack.affiliate.repository.CustomeraffiliateRepository;
-import com.camtrack.config.Utils;
 import com.camtrack.entities.User;
-import com.camtrack.transporter.repository.TransporterRepository;
 import com.camtrack.user.repository.CustomerRepository;
+import com.camtrack.user.repository.OauthAccessTokenRepository;
 import com.camtrack.user.repository.UserightsRepository;
 import com.camtrack.user.repository.UsersRepository;
 
@@ -32,11 +30,9 @@ public class CustomTokenConverter implements TokenEnhancer {
 	@Autowired
 	CustomerRepository customR;
 	@Autowired
-	CustomeraffiliateRepository affR;
-	@Autowired
-	TransporterRepository transpR;
-	@Autowired
 	UserightsRepository rightR;
+	@Autowired
+	OauthAccessTokenRepository accesstokenR;
 	@Value("${img.baselink}")
 	private String baselink;
 
@@ -51,15 +47,21 @@ public class CustomTokenConverter implements TokenEnhancer {
 
 	@Override
 	public OAuth2AccessToken enhance(final OAuth2AccessToken accessToken, final OAuth2Authentication authentication) {
-		final Map<String, Object> additionalInfo = new HashMap<>();
-		final User user = this.userRepository.findByUserName(authentication.getName()).orElse(null);
+		Map<String, Object> additionalInfo = new HashMap<>();
+		User user = this.userRepository.findByUserName(authentication.getName()).orElse(null);
 		Integer[] allroletypeid = { clientroleid, affiliateroleid, transporteroleid };
 		additionalInfo.put("userinfos",
-				Utils.usertoUserInfos(user, baselink, allroletypeid, customR, affR, transpR, rightR));
+				null);
 		// initialise connexion user
-		CustomLoginSuccessHandler.onAuthenticationSuccess(user.getUsername());
+
+		// CustomLoginSuccessHandler.onAuthenticationSuccess(user.getUsername());
 		((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
-		System.out.println("TEst Alanic DAta");
+		//System.out.println("TEst Alanic DAta");
+		user.setAccountNonLocked(true);
+		user.setFailedAttempt(Short.valueOf("0"));
+		user.setLockTime(null);
+		accesstokenR.deleteOauthAccessToken(user.getUsername());
+		user = userRepository.saveAndFlush(user);
 		return accessToken;
 	}
 }

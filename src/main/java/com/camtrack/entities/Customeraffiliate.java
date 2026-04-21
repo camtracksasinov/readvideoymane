@@ -77,6 +77,8 @@ public class Customeraffiliate implements Serializable {
 		Customeraffiliate.log = log;
 	}
 
+	@Column(name = "streamingurl")
+	private String streamingurl;
 	@JsonIgnore
 	@Column(name = "addressline1")
 	private String addressline1;
@@ -196,6 +198,24 @@ public class Customeraffiliate implements Serializable {
 
 	public Customeraffiliate(final Integer affiliateid) {
 		this.affiliateid = affiliateid;
+	}
+
+	public String getStreamingurl() {
+		return streamingurl;
+	}
+
+	public void setStreamingurl(String streamingurl, Boolean createorupdate) {
+		if (createorupdate) {
+			if (!Objects.isNull(streamingurl)) {
+				Customeraffiliate.log = Utils.createnewlogs(Customeraffiliate.log, streamingurl + "", "streamingurl");
+			}
+		} else if (!Objects.isNull(streamingurl) && !Objects.isNull(this.streamingurl)) {
+			Customeraffiliate.log = Utils.updatelogsinfos(Customeraffiliate.log, this.streamingurl + "",
+					streamingurl + "", "streamingurl");
+		} else if (!Objects.isNull(streamingurl)) {
+			Customeraffiliate.log = Utils.updatelogsinfos(Customeraffiliate.log, "", streamingurl + "", "streamingurl");
+		}
+		this.streamingurl = streamingurl;
 	}
 
 	@Override

@@ -73,36 +73,20 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	@Order
 	public void configure(final HttpSecurity http) throws Exception {
-		if (!enableSwaggerPlugin) {
-			((HttpSecurity) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((HttpSecurity) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) http
-					.cors().and().csrf().disable().authorizeRequests()
-					.antMatchers(HttpMethod.OPTIONS, new String[] { "*" })).permitAll().antMatchers(
-							new String[] { "/oauth/token" })).permitAll().and()).formLogin().and().httpBasic().and()
-									.authorizeRequests().antMatchers(new String[] { "/**", "/img/**", "/noauths/**",
-											"/api-docs/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html",
-											"/swagger-ui/**" })).permitAll().anyRequest()).authenticated().and())
-													.httpBasic().and().csrf().disable().headers().cacheControl()
-													.disable().xssProtection().and()
-													.contentSecurityPolicy(
-															"script-src 'self';object-src 'self';form-action 'self'")
-													.and().referrerPolicy(ReferrerPolicy.NO_REFERRER);
-			;
-		} else {
-			((HttpSecurity) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((HttpSecurity) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) http
-					.cors().and().csrf().disable().authorizeRequests()
-					.antMatchers(HttpMethod.OPTIONS, new String[] { "*" })).permitAll()
-							.antMatchers(new String[] { "/oauth/token" })).permitAll().and()).formLogin().and()
-									.httpBasic().and().authorizeRequests()
-									.antMatchers(new String[] { "/**", "/img/**", "/noauths/**", "/v2/api-docs",
-											"/configuration/**", "/swagger-resources/**", "/webjars/**", "/api-docs/**",
-											"/api-docs/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html",
-											"/swagger-ui/**" })).permitAll().anyRequest()).authenticated().and())
-													.httpBasic().and().csrf().disable().headers().cacheControl()
-													.disable().xssProtection().and()
-													.contentSecurityPolicy(
-															"script-src 'self';object-src 'self';form-action 'self'")
-													.and().referrerPolicy(ReferrerPolicy.NO_REFERRER);
-		}
+		((HttpSecurity) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((HttpSecurity) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) ((ExpressionUrlAuthorizationConfigurer.AuthorizedUrl) http
+				//.cors().and()
+				.csrf().disable().authorizeRequests()
+				.antMatchers(HttpMethod.OPTIONS, new String[] { "*" })).permitAll().antMatchers(
+						new String[] { "/oauth/token" })).permitAll().and()).formLogin().and().httpBasic().and()
+								.authorizeRequests().antMatchers(new String[] { "/**", "/img/**", "/noauths/**",
+										"/api-docs/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html",
+										"/swagger-ui/**" })).permitAll().anyRequest()).authenticated().and())
+												.httpBasic().and().csrf().disable().headers().cacheControl()
+												.disable().xssProtection().and()
+												.contentSecurityPolicy(
+														"script-src 'self';object-src 'self';form-action 'self'")
+												.and().referrerPolicy(ReferrerPolicy.NO_REFERRER);
+		;
 	}
 
 	/**
@@ -118,19 +102,10 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
-		if (!enableSwaggerPlugin) {
-			(web.ignoring()
-					.antMatchers(new String[] { "/img", "/img/**", "/noauths", "/noauths/**", "/api-docs/**",
-							"/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**" }))
-									.antMatchers(HttpMethod.OPTIONS, new String[] { "/**" });
-		} else {
-			(web.ignoring()
-					.antMatchers(new String[] { "/img", "/img/**", "/noauths", "/noauths/**", "/v2/api-docs",
-							"/configuration/**", "/swagger-resources/**", "/webjars/**", "/api-docs/**", "/v3/api-docs",
-							"/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**" })).antMatchers(HttpMethod.OPTIONS,
-									new String[] { "/**" });
-		}
-// antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**")
+		(web.ignoring()
+				.antMatchers(new String[] { "/img", "/img/**", "/noauths", "/noauths/**", "/api-docs/**",
+						"/v3/api-docs", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**" }))
+								.antMatchers(HttpMethod.OPTIONS, new String[] { "/**" });
 	}
 
 	@Bean

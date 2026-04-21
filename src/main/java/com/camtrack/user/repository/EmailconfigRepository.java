@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.camtrack.entities.Emailconfig;
 
@@ -25,11 +27,11 @@ public interface EmailconfigRepository extends JpaRepository<Emailconfig, Long> 
 	@Query(value = "select distinct userr.clientid from emailconfig userr where userr.configid in :listallconfigid", nativeQuery = true)
 	List<Integer> findAllListCustomerForSuperAdminByListID(final List<Long> listallconfigid);
 
-	@Query(value = "select distinct listotheremailreceiver from emailconfig", nativeQuery = true)
-	List<String> findAllListNativeOnEmailconfig();
+	@Query(value = "select distinct listotheremailreceiver,listotherwhatsappreceiver,whatsappflag,mailflag from emailconfig", nativeQuery = true)
+	List<Object[]> findAllListNativeOnEmailconfig();
 
-	@Query(value = "select distinct listotheremailreceiver from emailconfig where configid in :listallconfigid", nativeQuery = true)
-	List<String> findAllListNativeOnEmailconfigByListID(final List<Long> listallconfigid);
+	@Query(value = "select distinct listotheremailreceiver,listotherwhatsappreceiver,whatsappflag,mailflag from emailconfig where configid in :listallconfigid", nativeQuery = true)
+	List<Object[]> findAllListNativeOnEmailconfigByListID(final List<Long> listallconfigid);
 
 	@Query(value = "select distinct userr.transporterid from emailconfig userr", nativeQuery = true)
 	List<Integer> findAllListTransporterForSuperAdmin();
@@ -85,4 +87,9 @@ public interface EmailconfigRepository extends JpaRepository<Emailconfig, Long> 
 
 	@Query(value = "select configid,userid,paramtypeid,recordstatus,alertstatus,alarmstatus,vehicleid,listotheremailreceiver from emailconfig userr where userr.clientid is null and userr.affiliateid is null and userr.transporterid is null and userr.vehicleid is not null order by userr.userid,userr.vehicleid", nativeQuery = true)
 	List<Object[]> findListNativeEmailconfigForVehicleLevel();
+
+	@Modifying
+	@Transactional
+	@Query(value = "delete from emailconfig where userid = :userid", nativeQuery = true)
+	Integer deleteEmailConfig(Integer userid);
 }

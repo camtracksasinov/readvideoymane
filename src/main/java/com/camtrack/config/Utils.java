@@ -1,4 +1,3 @@
-//
 // Decompiled by Procyon v0.5.30
 //
 
@@ -36,9 +35,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.camtrack.affiliate.bean.AffiliateBean;
-import com.camtrack.affiliate.repository.CustomeraffiliateRepository;
 import com.camtrack.bean.AutomaticreportBean;
+import com.camtrack.bean.CreateUsers;
 import com.camtrack.bean.ListAllIdWithtypeexceptionBean;
 import com.camtrack.bean.ParameterconfigBean;
 import com.camtrack.bean.ParameterconfigInfos2;
@@ -73,12 +71,7 @@ import com.camtrack.entities.Transporter;
 import com.camtrack.entities.User;
 import com.camtrack.entities.Userrole;
 import com.camtrack.entities.Vehicle;
-import com.camtrack.rolemenu.bean.RightsRole;
-import com.camtrack.rolemenu.bean.RoleAndAccessInfos;
-import com.camtrack.rolemenu.repository.AccessRightRepository;
-import com.camtrack.rolemenu.repository.MenuRepository;
-import com.camtrack.transporter.bean.TransporterBean;
-import com.camtrack.transporter.repository.TransporterRepository;
+import com.camtrack.user.bean.UserBean;
 import com.camtrack.user.bean.UserInfos;
 import com.camtrack.user.repository.AllalertlevelRepository;
 import com.camtrack.user.repository.CustomerRepository;
@@ -176,8 +169,10 @@ public class Utils {
 	public static String WeeklyRestShorname;
 	public static String WeeklyWordk;
 	public static String WeeklyWordkShorname;
+	public static Integer limitRecordException;
 
 	static {
+		Utils.limitRecordException = 500;
 		Utils.coderawstatistics = 1016;
 		Utils.coderewardranking = 1017;
 		Utils.LogParameter = "";
@@ -268,6 +263,27 @@ public class Utils {
 				"[\\x00-\\x20]*[+-]?(NaN|Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*");
 		Utils.PASSWORD_PATTERN = Pattern
 				.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[;|,?\\\\@#$%^&+!=])(?=.{8,}).*$");// ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+!=])(?=.{8,}).*$
+	}
+
+	public static String DeleteLog(String username, final String objectsname) {
+		String logs;
+
+		logs = " Delete User <b>" + objectsname + "</b> by " + username + " Date <b>"
+				+ DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss") + "</b>";
+
+		return logs;
+	}
+
+	public static double round(Double value, int places) {
+		if ((places < 0) || (Objects.isNull(value))) {
+			return 0.0;
+		}
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = BigDecimal.valueOf(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 	public static List<MonthlyRecord> monhtlyfromperiod(int startYear0, int endYear0, int startMonth0, int endMonth0) {
@@ -525,13 +541,13 @@ public class Utils {
 			if (object instanceof Double) {
 				result = (double) object;
 			} else if (object instanceof Integer) {
-				result = (double) object;
+				result = ((Integer) object).doubleValue();
 			} else if (object instanceof BigDecimal) {
 				result = ((BigDecimal) object).doubleValue();
 			} else if (object instanceof BigInteger) {
 				result = ((BigInteger) object).doubleValue();
 			} else if (object instanceof Long) {
-				result = (double) object;
+				result = ((Long) object).doubleValue();
 			} else if (object instanceof String) {
 				result = Double.valueOf((String) object);
 			}
@@ -545,15 +561,15 @@ public class Utils {
 		Integer result = 0;
 		try {
 			if (object instanceof Double) {
-				result = (int) object;
+				result = ((Double) object).intValue();
 			} else if (object instanceof Integer) {
-				result = (int) object;
+				result = (Integer) object;
 			} else if (object instanceof BigInteger) {
 				result = ((BigInteger) object).intValue();
 			} else if (object instanceof BigDecimal) {
 				result = ((BigDecimal) object).intValue();
 			} else if (object instanceof Long) {
-				result = (int) object;
+				result = ((Long) object).intValue();
 			} else if (object instanceof String) {
 				result = Integer.valueOf((String) object);
 			}
@@ -567,9 +583,9 @@ public class Utils {
 		Long result = 0L;
 		try {
 			if (object instanceof Long) {
-				result = (long) object;
+				result = (Long) object;
 			} else if (object instanceof Double) {
-				result = (long) object;
+				result = ((Double) object).longValue();
 			} else if (object instanceof BigDecimal) {
 				result = ((BigDecimal) object).longValue();
 			} else if (object instanceof Integer) {
@@ -1371,8 +1387,8 @@ public class Utils {
 	}
 
 	public static boolean isDateSame(Calendar c1, Calendar c2) {
-		return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
-				&& c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH));
+		return ((c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)) && (c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH))
+				&& (c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH)));
 	}
 
 	public static boolean isDateSameHour(Calendar c1, Calendar c2) {
@@ -1393,59 +1409,9 @@ public class Utils {
 		return value >= -threshold && value <= threshold;
 	}
 
-	public static List<AffiliateBean> listtobean(final List<Customeraffiliate> listaff,
-			final ParameterconfigRepository paramR, final AllalertlevelRepository allalertLR) {
-		final List<AffiliateBean> list = new ArrayList<>();
-		for (final Customeraffiliate affiliate : listaff) {
-			final AffiliateBean affbean = new AffiliateBean();
-			affbean.setAffiliateid(affiliate.getAffiliateid());
-			affbean.setName(affiliate.getName());
-			affbean.setTelephone(affiliate.getTelephone());
-			affbean.setEmail(affiliate.getEmail());
-			affbean.setTimezone(affiliate.getAfftimezone());
-			affbean.setAdresse1(affiliate.getAddressline1());
-			affbean.setAdresse2(affiliate.getAddressline2());
-			affbean.setStatus(affiliate.getStatus());
-			final List<Integer> listparameter = paramR.findAllParameteridForAffiliate(affiliate.getAffiliateid());
-			affbean.setListypealertid(listparameter);
-			final Allalertlevel listlevelalert = allalertLR.findAffiliateAlert(affiliate.getAffiliateid()).orElse(null);
-			try {
-				affbean.setAlarmlevel(listlevelalert.getAlarmlevel());
-				affbean.setAlertlevel(listlevelalert.getAlertlevel());
-				affbean.setRecordlevel(listlevelalert.getRecordlevel());
-			} catch (Exception ex) {
-				affbean.setAlarmlevel((Boolean) null);
-				affbean.setAlertlevel((Boolean) null);
-				affbean.setRecordlevel((Boolean) null);
-			}
-			try {
-				affbean.setCustomerid(affiliate.getCustomerid().getCustomerid());
-			} catch (Exception ex2) {
-			}
-			list.add(affbean);
-		}
-		return list;
-	}
+	
 
-	public static List<TransporterBean> listtobeantrans(final List<Transporter> listtrans) {
-		final List<TransporterBean> list = new ArrayList<>();
-		for (final Transporter trans : listtrans) {
-			final TransporterBean affbean = new TransporterBean();
-			try {
-				affbean.setAffiliateid(trans.getAffiliateid().getAffiliateid());
-				affbean.setStatus(trans.getStatus());
-			} catch (Exception ex) {
-			}
-			affbean.setName(trans.getName());
-			affbean.setTransporterid(trans.getTransporterid());
-			try {
-				affbean.setTransportuniqueid(trans.getTransportuniqueid());
-			} catch (Exception ex2) {
-			}
-			list.add(affbean);
-		}
-		return list;
-	}
+	
 
 	public static String loadphase1() {
 		return "Load Phase 1";
@@ -1510,6 +1476,17 @@ public class Utils {
 		}
 	}
 
+	public static Boolean ObjectToBoolean2(final Object o) {
+		try {
+			if (Objects.isNull(o)) {
+				return false;
+			}
+			return (Boolean) o;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
 	public static String ObjectToString(final Object o) {
 		try {
 			if (Objects.isNull(o)) {
@@ -1518,6 +1495,22 @@ public class Utils {
 			return (String) o;
 		} catch (Exception ex) {
 			return null;
+		}
+	}
+
+	public static Boolean ObjectToInteger(Object o) {
+		try {
+			if (Objects.isNull(o)) {
+				return false;
+			}
+			Integer val = Integer.parseInt(String.valueOf(o));
+			if (val == 1) {
+				return true;
+			}
+
+			return false;
+		} catch (Exception ex) {
+			return false;
 		}
 	}
 
@@ -1783,69 +1776,7 @@ public class Utils {
 		return remainingValue;
 	}
 
-	public static List<RoleAndAccessInfos> roletorightmenu(final List<RoleBean> listrole,
-			final AccessRightRepository accessrR) {
-		final List<RoleAndAccessInfos> listroleaccess = new ArrayList<>();
-		for (final RoleBean reelroleusers : listrole) {
-			final RoleAndAccessInfos roleatomics = new RoleAndAccessInfos();
-			final Integer roleid = reelroleusers.getRoleid();
-			roleatomics.setRoleId(roleid);
-			roleatomics.setRolename(reelroleusers.getRolename());
-			final List<Accessrights> listaccess = accessrR.findByRole(roleid);
-			final List<RightsRole> listrights = new ArrayList<>();
-			for (final Accessrights acess : listaccess) {
-				final RightsRole smallrole = new RightsRole();
-				smallrole.setAdd(acess.getAdd());
-				smallrole.setDelete(acess.getDelete());
-				smallrole.setView(acess.getView());
-				smallrole.setEdit(acess.getEdit());
-				final Menu menu = acess.getMenuid();
-				smallrole.setDescription(menu.getDescription());
-				smallrole.setMenucodeid(menu.getMenuid());
-				smallrole.setMenuclass(menu.getMenuclass());
-				smallrole.setMenuhome(menu.getMenuhome());
-				smallrole.setMenulevel(menu.getMenulevel());
-				smallrole.setMenuorder(menu.getMenuorder());
-				smallrole.setMenuurl(menu.getMenuurl());
-				listrights.add(smallrole);
-			}
-			roleatomics.setListrights(listrights);
-			listroleaccess.add(roleatomics);
-		}
-		return listroleaccess;
-	}
-
-	public static List<RoleAndAccessInfos> roletorightsmallrolemenu(final Reelroleusers role,
-			final AccessRightRepository accessrR, final MenuRepository nemuR) {
-		final List<RoleAndAccessInfos> listroleaccess = new ArrayList<>();
-		final RoleAndAccessInfos roleatomics = new RoleAndAccessInfos();
-		roleatomics.setRoleId(role.getIds());
-		roleatomics.setRolename(role.getRolenames());
-		final List<Accessrights> listaccess = accessrR.findByRole(role.getIds());
-		final List<RightsRole> listrights = new ArrayList<>();
-		for (final Accessrights acess : listaccess) {
-			final RightsRole smallrole = new RightsRole();
-			smallrole.setAdd(acess.getAdd());
-			smallrole.setDelete(acess.getDelete());
-			smallrole.setView(acess.getView());
-			smallrole.setEdit(acess.getEdit());
-			final Menu menu = nemuR.findByIDs(acess.getMenuid().getMenuid());
-			if (!Objects.isNull(menu)) {
-				smallrole.setDescription(menu.getDescription());
-				smallrole.setMenucodeid(menu.getMenuid());
-				smallrole.setMenuclass(menu.getMenuclass());
-				smallrole.setMenuhome(menu.getMenuhome());
-				smallrole.setMenulevel(menu.getMenulevel());
-				smallrole.setMenuorder(menu.getMenuorder());
-				smallrole.setMenuurl(menu.getMenuurl());
-				smallrole.setParentmenucodeid(menu.getParentmenuid());
-			}
-			listrights.add(smallrole);
-		}
-		roleatomics.setListrights(listrights);
-		listroleaccess.add(roleatomics);
-		return listroleaccess;
-	}
+	
 
 	public static boolean scpdescandtoTransporter() {
 		return false;
@@ -1918,9 +1849,10 @@ public class Utils {
 			final Date result = formatter.parse(date);
 			return result;
 		} catch (Exception e) {
-			final String[] dates = date.split("\\s+");
-			final String date2 = dates[0].replaceAll(":", "-") + " " + dates[1];
+
 			try {
+				final String[] dates = date.split("\\s+");
+				final String date2 = dates[0].replaceAll(":", "-") + " " + dates[1];
 				final DateFormat formatter2 = new SimpleDateFormat(format);
 				final Date result2 = formatter2.parse(date2);
 				return result2;
@@ -1941,9 +1873,10 @@ public class Utils {
 			calendar.add(5, susbtractionhours);
 			return calendar.getTime();
 		} catch (Exception e) {
-			final String[] dates = date.split("\\s+");
-			final String date2 = dates[0].replaceAll(":", "-") + " " + dates[1];
+
 			try {
+				final String[] dates = date.split("\\s+");
+				final String date2 = dates[0].replaceAll(":", "-") + " " + dates[1];
 				final DateFormat formatter2 = new SimpleDateFormat(format);
 				final Date result2 = formatter2.parse(date2);
 				return result2;
@@ -1960,9 +1893,10 @@ public class Utils {
 			final Date result = formatter.parse(date);
 			return result;
 		} catch (Exception e) {
-			final String[] dates = date.split("\\s+");
-			final String date2 = dates[0].replaceAll(":", "-") + " " + dates[1];
+
 			try {
+				final String[] dates = date.split("\\s+");
+				final String date2 = dates[0].replaceAll(":", "-") + " " + dates[1];
 				final DateFormat formatter2 = new SimpleDateFormat(format);
 				final Date result2 = formatter2.parse(date2);
 				return result2;
@@ -3672,94 +3606,7 @@ public class Utils {
 		return Short.valueOf("11");
 	}
 
-	public static UserInfos usertoUserInfos(final User users, String baseling, Integer[] allroletypeid,
-			CustomerRepository customR, CustomeraffiliateRepository affR, TransporterRepository transpR,
-			UserightsRepository rightR) {
-		final UserInfos userinfos = new UserInfos();
-		userinfos.setEmail(users.getEmailid());
-		try {
-			final Language lang = users.getLanguageid();
-			if (!Objects.isNull(lang)) {
-				userinfos.setLanguage(lang.getLanguageid());
-				userinfos.setLanguagename(lang.getName());
-			}
-		} catch (Exception ex) {
-		}
-		userinfos.setName(users.getName());
-		userinfos.setPhonenumber(users.getContacts());
-		userinfos.setIs1(users.getUsername());
-		userinfos.setActif((boolean) users.getEnabled());
-		// ;
-		Integer roleUser = null;
-		try {
-			userinfos.setAlanosqd(new String(Base64.getEncoder().encode(users.getVsspassword().getBytes())));
-			userinfos.setAlofaqsdes(MD5Generator(users.getVsspassword()));
-		} catch (Exception ex) {
-
-		}
-		try {
-			final Reelroleusers role = users.getReelrole();
-
-			userinfos.setUserrole(role.getIds());
-			final Userrole typerole = role.getIdtyperole();
-			userinfos.setUsersid(users.getUserid());
-			if (!Objects.isNull(typerole)) {
-				roleUser = typerole.getUserroleid();
-				userinfos.setUsertyperoleid(roleUser);
-				userinfos.setTyperolename(typerole.getName());
-			}
-		} catch (Exception ex) {
-
-		}
-		userinfos.setSexe(users.getSexe());
-		userinfos.setPictures(users.getPictures());
-		userinfos.setCon1(users.isFirst());
-		userinfos.setMfa(users.isMfa());
-		userinfos.setHummad(users.getIsadmin());
-		if (!Objects.isNull(users.getPictures())) {
-			userinfos.setImguser(baseling + "/" + users.getPictures());
-		}
-
-		boolean trouve = false;
-		List<Customer> listcustom = null;
-		if (!Objects.isNull(roleUser)) {
-			if (!Objects.isNull(allroletypeid[0])) {
-				if (allroletypeid[0] == roleUser) {
-					trouve = true;
-					listcustom = rightR.findAllCustomerHierarchieOfUserId(users.getUserid());
-				}
-			}
-
-			if (!trouve) {
-				if (!Objects.isNull(allroletypeid[1])) {
-					if (allroletypeid[1] == roleUser) {
-						trouve = true;
-						listcustom = rightR.findAllCustomerFromCustomerAffiliateUser(users.getUserid());
-					}
-				}
-			}
-
-			if (!trouve) {
-				if (!Objects.isNull(allroletypeid[2])) {
-					if (allroletypeid[2] == roleUser) {
-						trouve = true;
-						listcustom = rightR.findAllCustomerFromAffiliateFromTransporterUser(users.getUserid());
-					}
-				}
-			}
-		}
-
-		if ((!Objects.isNull(listcustom)) && (!listcustom.isEmpty()) && (listcustom.size() == 1)) {
-			Customer cus = listcustom.get(0);
-			if (!Objects.isNull(cus.getLogourl())) {
-				userinfos.setImgcus(baseling + "/" + cus.getLogourl());
-				userinfos.setCln(cus.getName());
-			}
-		}
-
-		// users.getReelrole().get
-		return userinfos;
-	}
+	
 
 	public static Short UserTypeconfig() {
 		return Short.valueOf("5");
@@ -3809,5 +3656,53 @@ public class Utils {
 			totalHours = 0L;
 		}
 		return totalHours;
+	}
+
+	public static Boolean NullToBolean(Boolean record) {
+		if (Objects.isNull(record)) {
+			return false;
+		} else {
+			return record;
+		}
+	}
+
+	public static CreateUsers users(User users) {
+		CreateUsers create = new CreateUsers();
+		create.setContacts(users.getContacts());
+		create.setEmailid(users.getEmailid());
+		create.setMfa(users.getMfa());
+		create.setName(users.getName());
+		create.setUserid(users.getUserid());
+		create.setUsername(users.getUsername());
+		try {
+			create.setLanguageid(users.getLanguageid().getName());
+		} catch (Exception ex) {
+			create.setLanguageid("fr");
+		}
+		return create;
+	}
+	
+	public static UserBean userFromUserBean(User user)
+	{
+		UserBean bean=new UserBean();
+		bean.setContacts(user.getContacts());
+		bean.setEmail(user.getEmailid());
+		bean.setEnabled(user.getEnabled());
+		bean.setFirstconn(user.isFirst());
+		bean.setMfa(user.getMfa());
+		bean.setName(user.getName());
+		bean.setUnblock(user.isAccountNonLocked());
+		bean.setUserid(user.getUserid());
+		bean.setSexe(user.getSexe());
+		try {
+			final Reelroleusers roles = user.getReelrole();
+			final Userrole typeuser = roles.getIdtyperole();
+			bean.setRoleid(roles.getIds());
+			bean.setRolename(roles.getRolenames());
+			bean.setTyperoleid(typeuser.getUserroleid());
+			bean.setEntitiestype(typeuser.getName());
+		} catch (Exception ex) {
+		}
+		return bean;
 	}
 }

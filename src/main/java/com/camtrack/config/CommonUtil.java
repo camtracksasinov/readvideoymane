@@ -15,8 +15,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.camtrack.reports.bean.WeekDaysBean;
-
 public class CommonUtil {
 	public static String getAppURL(final HttpServletRequest request) {
 		String url = null;
