@@ -23,36 +23,31 @@
     <dependencies>
 
         <!-- SPRING BOOT STARTERS -->
-        <!-- Web : jackson-databind, tomcat, servlet-api, spring-web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!-- Validation : @Valid, @NotNull, @Size, PasswordValueMatch, ValidPassword -->
+        <!-- @Valid, @NotNull, @NotBlank, PasswordConstraintValidator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-        <!-- JPA : hibernate, javax.persistence, spring-data-jpa, spring-jdbc -->
+        <!-- @Entity, JpaRepository, JdbcTemplate, @Transactional -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-rest</artifactId>
-        </dependency>
-        <!-- AOP : CaptchaAop (@Aspect, @Around) -->
+        <!-- CaptchaAop (@Aspect, @Around) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-        <!-- Mail : JavaMailSender, MimeMessage, EmailConfigServiceImpl -->
+        <!-- JavaMailSender, MimeMessage, MimeMessageHelper -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <!-- Cache : @Cacheable, @CacheEvict, CacheConfig.java -->
+        <!-- @Cacheable, CaffeineCacheManager, @EnableCaching -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -67,6 +62,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
+        <!-- @EnableDiscoveryClient -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -77,7 +73,7 @@
         </dependency>
 
         <!-- SECURITE OAuth2 -->
-        <!-- AuthorizationServerConfigurerAdapter, JdbcTokenStore, EnableResourceServer -->
+        <!-- @EnableResourceServer, JdbcTokenStore, DefaultTokenServices -->
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
@@ -90,35 +86,34 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
         </dependency>
-        <!-- Jasypt : @EnableEncryptableProperties - 3.0.5 compatible Boot 2.7.x -->
+        <!-- @EnableEncryptableProperties -->
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>3.0.5</version>
         </dependency>
 
-        <!-- BASE DE DONNÉES -->
+        <!-- BASE DE DONNEES -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- LOMBOK : @Slf4j, annotation processor -->
+        <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!-- CACHE Caffeine : CaffeineCacheManager, Caffeine.newBuilder() -->
+        <!-- CACHE Caffeine -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
 
-        <!-- DOCUMENTATION API : @Parameter, @SecurityRequirement, OpenAPI -->
-        <!-- 1.7.0 = derniere version compatible Spring Boot 2.x -->
+        <!-- DOCUMENTATION API : 1.7.0 = derniere version compatible Boot 2.x -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
@@ -126,10 +121,9 @@
         </dependency>
 
         <!-- HTTP CLIENT
-             IMPORTANT : Le code (NoauthsServices.java, Noauths.java) utilise l'ANCIEN
-             namespace com.squareup.okhttp (OkHttp v2). Ne pas migrer sans refactoriser.
-             okio:3.6.0 est necessaire explicitement car Spring Cloud Commons charge okhttp3
-             en interne -> sans cette declaration : NoClassDefFoundError: okio/Options -->
+             OkHttp v2 : com.squareup.okhttp.* utilise dans NoauthsServices.java
+             OkIO 3.x requis explicitement par Spring Cloud Commons (okhttp3 interne)
+             -> sans okio:3.6.0 : NoClassDefFoundError: okio/Options au demarrage -->
         <dependency>
             <groupId>com.squareup.okhttp</groupId>
             <artifactId>okhttp</artifactId>
@@ -141,37 +135,13 @@
             <version>2.7.5</version>
         </dependency>
         <dependency>
-            <groupId>com.squareup.retrofit</groupId>
-            <artifactId>retrofit</artifactId>
-            <version>1.9.0</version>
-        </dependency>
-        <!-- okio:3.6.0 explicite - resout NoClassDefFoundError: okio/Options -->
-        <dependency>
             <groupId>com.squareup.okio</groupId>
             <artifactId>okio</artifactId>
             <version>3.6.0</version>
         </dependency>
 
-        <!-- EXPORT & FICHIERS -->
-        <!-- POI : Cell, CellStyle, Row, Sheet, Workbook - generation Excel -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.5</version>
-        </dependency>
-        <!-- Commons IO : FilenameUtils (UserServiceImpl) -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.15.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-            <version>3.10.0</version>
-        </dependency>
-        <!-- Commons FileUpload : CommonsMultipartResolver (Ymane.java) -->
-        <!-- v1.5 corrige CVE-2023-24998 presente dans 1.4 -->
+        <!-- FICHIERS & UPLOAD -->
+        <!-- CommonsMultipartResolver (Video.java multipartResolver bean) -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -179,23 +149,16 @@
         </dependency>
 
         <!-- EMAIL
-             spring-boot-starter-mail inclut jakarta.mail mais le code utilise
-             directement javax.mail.* (Address, Authenticator, Message, Session,
-             Transport...) dans Mailer.java et EmailConfigServiceImpl.java -->
+             javax.mail.* utilise directement dans Mailer.java et NoauthsServices.java
+             (Address, Authenticator, Message, Session, Transport...) -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
-        <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-            <version>1.1.1</version>
-        </dependency>
 
-        <!-- JAXB - requis Java 11+ car retire du JDK
-             97 usages : @XmlRootElement, @XmlTransient dans les entites
-             (Scp, Linkloastpassword, Vehicledriver, Annexeaffiliateid...) -->
+        <!-- JAXB - retire du JDK depuis Java 11
+             @XmlRootElement, @XmlTransient utilises dans les entites -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -208,70 +171,44 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JACKSON (ancienne API)
-             ATTENTION : AffiliateServiceImpl.java importe org.codehaus.jackson.map.ObjectMapper
-             (Jackson 1.x). Cette dependance est necessaire tant que ce fichier n'est pas migre
-             vers com.fasterxml.jackson.databind.ObjectMapper (Jackson 2.x). -->
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-
         <!-- UTILITAIRES -->
-        <!-- Commons Lang3 : RandomStringUtils (NoauthsServices.java) -->
+        <!-- RandomStringUtils (NoauthsServices.java) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
-        </dependency>
-        <!-- Commons Codec : Base64 - version geree par Spring Boot parent -->
+        <!-- Base64 (org.apache.commons.codec.binary.Base64) -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
-        <!-- Guava : Joiner (com.google.common.base.Joiner) -->
+        <!-- Joiner (com.google.common.base.Joiner) -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.2.1-jre</version>
         </dependency>
-        <!-- Gson : AffiliateParameterMappingController -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        <!-- org.json : JSONObject, JSONArray, JSONException -->
+        <!-- JSONObject, JSONArray (NoauthsServices.java) -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
-        <!-- JSON Simple : com.github.cliftonlabs -->
-        <dependency>
-            <groupId>com.github.cliftonlabs</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>3.1.0</version>
-        </dependency>
 
         <!-- AUTHENTIFICATION 2FA / MFA -->
-        <!-- Passay : AlphabeticalSequenceRule, DigitCharacterRule, LengthRule... -->
+        <!-- AlphabeticalSequenceRule, DigitCharacterRule, LengthRule... -->
         <dependency>
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- AeroGear OTP : Base32 pour TOTP -->
+        <!-- Base32 pour TOTP -->
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-otp-java</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- TOTP : CodeGenerator, CodeVerifier, QrData, SecretGenerator (14 classes) -->
+        <!-- CodeGenerator, CodeVerifier, QrData, SecretGenerator -->
         <dependency>
             <groupId>dev.samstevens.totp</groupId>
             <artifactId>totp</artifactId>
@@ -291,6 +228,20 @@
             </exclusions>
         </dependency>
 
+        <!--
+            SUPPRIMEES car non utilisees dans le code source :
+            - spring-boot-starter-data-rest  (aucun import org.springframework.data.rest)
+            - poi-ooxml 5.2.5               (aucun import org.apache.poi)
+            - commons-io 2.15.1             (aucun import org.apache.commons.io)
+            - commons-net 3.10.0            (aucun import org.apache.commons.net)
+            - commons-math3 3.6.1           (aucun import org.apache.commons.math)
+            - gson                          (aucun import com.google.gson)
+            - json-simple                   (aucun import com.github.cliftonlabs)
+            - jackson-mapper-asl (codehaus) (aucun import org.codehaus.jackson)
+            - retrofit 1.9.0               (aucun import com.squareup.retrofit)
+            - javax.activation 1.1.1        (aucun import javax.activation)
+        -->
+
     </dependencies>
 
     <dependencyManagement>
@@ -301,11 +252,6 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.15.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -344,7 +290,7 @@
     <repositories>
         <repository>
             <id>spring-milestones</id>
-            <name>Spring Milestones</name>
+            <n>Spring Milestones</n>
             <url>https://repo.spring.io/milestone</url>
         </repository>
     </repositories>
